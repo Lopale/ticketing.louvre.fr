@@ -1,0 +1,4 @@
+services:
+#    dg_ticketing.example:
+#        class: DG\TicketingBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
