@@ -1,3 +1,7 @@
 dg_ticketing_homepage:
     path:     /
     defaults: { _controller: DGTicketingBundle:Default:index }
+
+hello_the_world:
+    path:     /hello-world
+    defaults: { _controller: DGTicketingBundle:Booking:index }
