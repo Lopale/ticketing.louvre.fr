@@ -1,3 +1,19 @@
-hello_the_world:
-    path:     /hello-world
-    defaults: { _controller: DGTicketingBundle:Booking:index }
+#Première étape réservation
+dg_ticketing_home:    
+    path:      /{page}
+    defaults:
+        _controller:  DGTicketingBundle:Booking:index
+        page:        1
+    requirements:
+        page: \d*
+    
+dg_ticketing_add:
+    path:      /add
+    defaults: { _controller: DGTicketingBundle:Booking:add }
+
+#Voir une Réservation particulière
+dg_ticketing_view:
+    path:      /booking/{id}
+    defaults: { _controller: DGTicketingBundle:Booking:view }
+    requirements:
+        id: \d+

@@ -1,4 +1,4 @@
 dg_ticketing:
     resource: "@DGTicketingBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /ticketing
 

@@ -1,0 +1,39 @@
+{% extends "DGTicketingBundle::layout.html.twig" %}
+
+{% block title %}
+  Lecture d'une annonce - {{ parent() }}
+{% endblock %}
+
+{% block dgticketing_body %}
+
+ <p>ID : {{ booking.id }}</p>
+ <p>Date de la commande : {{ booking.bookingDate|date('d/m/Y') }}</p>
+ <p>Date de la visite : {{ booking.visiteDay|date('d/m/Y') }}</p>
+ <p>Email de commande : {{ booking.email }}</p>
+ <p>Numéro de réservation : {{ booking.bookingNumber }}</p>
+
+
+  {% if listTickets|length > 0 %}
+    <div>
+      Cette commande contient les tickets suivants :
+      <ul>
+        {% for ticket in listTickets %}
+        <li>
+        	<ul>
+	          <li> Nom : {{ ticket.nameTicket }}</li>
+	          <li> Prénom : {{ ticket.firstnameTicket }}</li>
+	          <li> Date de naissance : {{ ticket.brithDate|date('d/m/Y') }}</li>
+	          <li> Date de visite : {{ ticket.visitDay|date('d/m/Y') }}</li>
+	          <li> Type de ticket : {{ ticket.ticketType }}</li>
+	        </ul>
+	    </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+
+
+
+
+{% endblock %}
