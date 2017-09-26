@@ -22,6 +22,27 @@ class BookingController extends Controller
 {
 
 
+  private function getDisabledDateForDaysOff()
+    {
+
+        $disabledDateCurrentYear = '';
+        $disabledDateNextYear = '';
+        $currentYear = date('Y');
+        $nextYear = date('Y')+1;
+        $daysOff = ['01-01-', '17-04-', '01-05-', '08-05-', '25-05-', '05-06-', '14-07-', '15-08-', '01-11-', '11-11-'];
+        foreach ($daysOff as $dayOff){
+            $disabledDateCurrentYear = $disabledDateCurrentYear.$dayOff.$currentYear.', ';
+            $disabledDateNextYear = $disabledDateNextYear.$dayOff.$nextYear.', ';
+        }
+        $disabledDate = $disabledDateCurrentYear.'25-12-'.$currentYear.', '.$disabledDateNextYear.'25-12-'.$nextYear;
+        
+        //$disabledDate ='25-12-2017,25-12-2018';
+
+        return $disabledDate;
+    }
+
+
+
    public function viewAction($id, Request $request)
   {
     $em = $this->getDoctrine()->getManager();
@@ -69,8 +90,19 @@ class BookingController extends Controller
                                 'html5' => false,
                                 'format' => "dd/MM/yyyy",
                                 'model_timezone' => 'Europe/Paris',
-                                'attr' => ['class' => 'js-datepicker'],
-                                'required' => true
+                                'attr' => [
+                                  'class' => 'js-datepicker',
+                                  'data-date-start-date' => "0d",
+                                  'data-date-end-date' => '+364d',
+                                  'data-provide' => 'datepicker',
+                                  'data-date-language' => 'fr',
+                                  'data-date-start-date' => "0d",
+                                  'data-date-end-date' => '+364d',
+                                  'data-date-dates-disabled' => $this->getDisabledDateForDaysOff()
+                                ],
+                                'required' => true,
+
+                                
                             ))
       ->add('email',     EmailType::class, array('required' => true))
       //->add('number',    NumberType::class, array('required' => true))
