@@ -11,8 +11,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 class BookingController extends Controller
@@ -61,9 +64,22 @@ class BookingController extends Controller
 
     // On ajoute les champs de l'entité que l'on veut à notre formulaire
     $formBuilder
-      ->add('visiteDay',  DateType::class, array('required' => true))
+      ->add('visiteDay',   DateType::class, array(
+                                'widget' => 'single_text',
+                                'html5' => false,
+                                'format' => "dd/MM/yyyy",
+                                'constraints' => [
+                                  new Assert\Range(array(
+                                    'min'=>'now',
+                                    'minMessage'=>"La date ne peut pas être passé"
+                                  ))
+                                ],
+                                'attr' => ['class' => 'js-datepicker'],
+                                'required' => true
+                            ))
       ->add('email',     EmailType::class, array('required' => true))
-      ->add('save',      SubmitType::class)
+      //->add('number',    NumberType::class, array('required' => true))
+      ->add('Valider',      SubmitType::class)
     ;
     
 
