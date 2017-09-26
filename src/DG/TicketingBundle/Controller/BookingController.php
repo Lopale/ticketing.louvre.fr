@@ -68,12 +68,7 @@ class BookingController extends Controller
                                 'widget' => 'single_text',
                                 'html5' => false,
                                 'format' => "dd/MM/yyyy",
-                                'constraints' => [
-                                  new Assert\Range(array(
-                                    'min'=>'now',
-                                    'minMessage'=>"La date ne peut pas être passé"
-                                  ))
-                                ],
+                                'model_timezone' => 'Europe/Paris',
                                 'attr' => ['class' => 'js-datepicker'],
                                 'required' => true
                             ))
