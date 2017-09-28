@@ -86,6 +86,7 @@ class BookingController extends Controller
     // On ajoute les champs de l'entité que l'on veut à notre formulaire
     $formBuilder
       ->add('visiteDay',   DateType::class, array(
+                                'label' => 'Date de la visite',
                                 'widget' => 'single_text',
                                 'html5' => false,
                                 'format' => "dd/MM/yyyy",
@@ -104,8 +105,8 @@ class BookingController extends Controller
 
                                 
                             ))
-      ->add('email',     EmailType::class, array('required' => true))
-      //->add('number',    NumberType::class, array('required' => true))
+      ->add('email',     EmailType::class, array('label' => 'Adresse email à laquelle seront envoyé les billets','required' => true))
+      //->add('quantity',    NumberType::class, array('label' => 'Nombre de tickets','required' => true))
       ->add('Valider',      SubmitType::class)
     ;
     

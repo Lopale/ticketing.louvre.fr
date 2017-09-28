@@ -17,9 +17,82 @@
 		</div>
 	</div>
 
+	{# Version non éclaté 
 	<div class="well">
 		{{ form(form) }}
 	</div>
+ 	#}
+
+	<div class="well">
+
+	  {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+
+	  {# Les erreurs générales du formulaire. #}
+	  {{ form_errors(form) }}
+
+
+
+	  {# Génération manuelle et éclatée : #}
+	  <div class="form-group">
+	    {# Génération du label. #}
+	    {{ form_label(form.visiteDay, "Jour de la visite", {'label_attr': {'class': 'col-sm-6 control-label'}}) }}
+
+	    {# Affichage des erreurs pour ce champ précis. #}
+	    {{ form_errors(form.visiteDay) }}
+
+	    <div class="col-sm-6">
+	      {# Génération de l'input. #}
+	      {{ form_widget(form.visiteDay, {'attr': {'class': 'form-control'}}) }}
+	    </div>
+	  </div>
+
+	  {# Idem pour un autre champ. #}
+	  <div class="form-group">
+	    {{ form_label(form.email, "Adresse email à laquelle seront envoyé les billets", {'label_attr': {'class': 'col-sm-6 control-label'}}) }}
+	    {{ form_errors(form.email) }}
+	    <div class="col-sm-6">
+	      {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+	    </div>
+	  </div>
+
+	   {# Idem pour un autre champ. #}
+	  <div class="form-group">
+	  	<label class="col-sm-6 control-label control-label required" for="form_quantity">Nombre de billets</label>
+	  	<div class="col-sm-6">
+			<select class="form-control" name="quantity">
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+				<option>5</option>
+				<option>6</option>
+				<option>7</option>
+				<option>8</option>
+				<option>9</option>
+				<option>10</option>
+				<option>11</option>
+				<option>12</option>
+				<option>13</option>
+				<option>14</option>
+				<option>15</option>
+			</select>
+	  	</div>
+	    
+	  </div>
+
+
+	{# Pour le bouton, pas de label ni d'erreur, on affiche juste le widget #}
+	{{ form_widget(form.Valider, {'attr': {'class': 'btn btn-primary'}}) }}
+
+	  {# Génération automatique des champs pas encore écrits.
+	     Dans cet exemple, ce serait le champ CSRF (géré automatiquement par Symfony !)
+	     et tous les champs cachés (type « hidden »). #}
+	  {{ form_rest(form) }}
+
+	  {# Fermeture de la balise <form> du formulaire HTML #}
+	  {{ form_end(form) }}
+	</div>
+
 
 
 
