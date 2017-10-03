@@ -47,7 +47,7 @@ class Booking
      *
      * @ORM\Column(name="bookingNumber", type="smallint")
      */
-    private $bookingNumber;
+    private $bookingNumber = "1234";
 
     /**
    * @ORM\Column(name="bookingTerminated", type="boolean")

@@ -11,6 +11,13 @@ dg_ticketing_add:
     path:      /add
     defaults: { _controller: DGTicketingBundle:Booking:add }
 
+#2eme etape
+dg_ticketing_ticket:
+    path:      /ticket/{id}
+    defaults: { _controller: DGTicketingBundle:Booking:ticket }
+    requirements:
+        id: \d+
+
 #Voir une Réservation particulière
 dg_ticketing_view:
     path:      /booking/{id}

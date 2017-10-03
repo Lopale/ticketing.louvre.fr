@@ -1,0 +1,33 @@
+{% extends "DGTicketingBundle::layout.html.twig" %}
+
+{% block title %}
+  Accueil - {{ parent() }}
+{% endblock %}
+
+{% block dgticketing_body %}
+
+
+
+  <h2>Commander</h2>
+
+    {# Barre de Progression #}
+  <div class="progress">
+    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="125" style="width: 25%">
+      <span class="sr-only">25% Complete</span>
+    </div>
+  </div>
+
+
+  <div class="well">
+  	<h3>Billet N°</h3>
+    {{ form(form) }}
+  </div>
+
+
+
+
+
+
+
+
+{% endblock %}
