@@ -55,6 +55,11 @@ class Booking
     private $bookingTerminated = false;
 
 
+    /**
+   * @ORM\OneToMany(targetEntity="OC\PlatformBundle\Entity\Application", mappedBy="advert")
+   */
+    private $tickets; // Notez le « s », une annonce est liée à plusieurs candidatures
+
 
     public function __construct()
       {
@@ -217,4 +222,17 @@ class Booking
     {
         return $this->BookingTerminated;
     }
+
+
+
+  /**
+   * @return \Doctrine\Common\Collections\Collection
+   */
+  public function getTickets()
+  {
+    return $this->tickets;
+  }
+
+
+
 }

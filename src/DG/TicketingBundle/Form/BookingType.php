@@ -2,6 +2,9 @@
 
 namespace DG\TicketingBundle\Form;
 
+use DG\TicketingBundle\Repository\TicketRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -11,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class BookingType extends AbstractType
 {
@@ -63,6 +67,17 @@ class BookingType extends AbstractType
                                 
                             ))
       ->add('email',     EmailType::class, array('label' => 'Adresse email à laquelle seront envoyé les billets','required' => true))
+      /*
+       * Rappel :
+       ** - 1er argument : nom du champ, ici « categories », car c'est le nom de l'attribut
+       ** - 2e argument : type du champ, ici « CollectionType » qui est une liste de quelque chose
+       ** - 3e argument : tableau d'options du champ
+       */
+      ->add('tickets', CollectionType::class, array(
+        'entry_type'   => TicketType::class,
+        'allow_add'    => true,
+        'allow_delete' => true
+      ))
       ->add('Valider',      SubmitType::class);
     }
     
