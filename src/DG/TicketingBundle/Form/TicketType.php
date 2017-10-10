@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class TicketType extends AbstractType
 {
+    
     /**
      * {@inheritdoc}
      */

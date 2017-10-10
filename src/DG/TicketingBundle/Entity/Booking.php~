@@ -3,6 +3,7 @@
 namespace DG\TicketingBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Booking
@@ -12,6 +13,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Booking
 {
+
+    /**
+   * @ORM\ManyToOne(targetEntity="OC\PlatformBundle\Entity\DurationTicket")
+   * @ORM\JoinColumn(nullable=false)
+   */
+  private $durationticket;
+
+
+
+
     /**
      * @var int
      *
@@ -47,7 +58,7 @@ class Booking
      *
      * @ORM\Column(name="bookingNumber", type="smallint")
      */
-    private $bookingNumber;
+    private $bookingNumber = "1234";
 
     /**
    * @ORM\Column(name="bookingTerminated", type="boolean")
@@ -55,11 +66,18 @@ class Booking
     private $bookingTerminated = false;
 
 
+    /**
+   * @ORM\OneToMany(targetEntity="DG\TicketingBundle\Entity\Ticket", mappedBy="booking")
+   */
+    private $tickets; // Notez le « s » une commande (booking) à plusieurs ticket
+
 
     public function __construct()
       {
         // Par défaut, la date de la Réservation est la date d'aujourd'hui
         $this->bookingDate = new \Datetime();
+        $this->visiteDay = new \Datetime();
+        $this->tickets = new ArrayCollection();
       }
 
 
@@ -215,5 +233,42 @@ class Booking
     public function getBookingTerminated()
     {
         return $this->BookingTerminated;
+    }
+
+
+
+  /**
+   * @return \Doctrine\Common\Collections\Collection
+   */
+  public function getTickets()
+  {
+    return $this->tickets;
+  }
+
+
+
+
+    /**
+     * Add ticket
+     *
+     * @param \DG\TicketingBundle\Entity\Ticket $ticket
+     *
+     * @return Booking
+     */
+    public function addTicket(\DG\TicketingBundle\Entity\Ticket $ticket)
+    {
+        $this->tickets[] = $ticket;
+
+        return $this;
+    }
+
+    /**
+     * Remove ticket
+     *
+     * @param \DG\TicketingBundle\Entity\Ticket $ticket
+     */
+    public function removeTicket(\DG\TicketingBundle\Entity\Ticket $ticket)
+    {
+        $this->tickets->removeElement($ticket);
     }
 }

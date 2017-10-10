@@ -67,6 +67,14 @@ class BookingType extends AbstractType
                                 
                             ))
       ->add('email',     EmailType::class, array('label' => 'Adresse email à laquelle seront envoyé les billets','required' => true))
+
+      ->add('durationticket', EntityType::class, array(
+          'label'        => 'vous désirez un ticket pour :',
+          'class'        => 'DGTicketingBundle:DurationTicket',
+          'choice_label' => 'nameDuration',
+          'multiple'     => false,
+          'expanded'     => true
+        ))
       /*
        * Rappel :
        ** - 1er argument : nom du champ, ici « categories », car c'est le nom de l'attribut

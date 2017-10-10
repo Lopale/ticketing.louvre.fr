@@ -3,6 +3,7 @@
 namespace DG\TicketingBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Booking
@@ -12,6 +13,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Booking
 {
+
+    /**
+   * @ORM\ManyToOne(targetEntity="OC\PlatformBundle\Entity\DurationTicket")
+   * @ORM\JoinColumn(nullable=false)
+   */
+  private $durationticket;
+
+
+
+
     /**
      * @var int
      *
@@ -56,9 +67,9 @@ class Booking
 
 
     /**
-   * @ORM\OneToMany(targetEntity="OC\PlatformBundle\Entity\Application", mappedBy="advert")
+   * @ORM\OneToMany(targetEntity="DG\TicketingBundle\Entity\Ticket", mappedBy="booking")
    */
-    private $tickets; // Notez le « s », une annonce est liée à plusieurs candidatures
+    private $tickets; // Notez le « s » une commande (booking) à plusieurs ticket
 
 
     public function __construct()
@@ -66,6 +77,7 @@ class Booking
         // Par défaut, la date de la Réservation est la date d'aujourd'hui
         $this->bookingDate = new \Datetime();
         $this->visiteDay = new \Datetime();
+        $this->tickets = new ArrayCollection();
       }
 
 
@@ -235,4 +247,52 @@ class Booking
 
 
 
+
+    /**
+     * Add ticket
+     *
+     * @param \DG\TicketingBundle\Entity\Ticket $ticket
+     *
+     * @return Booking
+     */
+    public function addTicket(\DG\TicketingBundle\Entity\Ticket $ticket)
+    {
+        $this->tickets[] = $ticket;
+
+        return $this;
+    }
+
+    /**
+     * Remove ticket
+     *
+     * @param \DG\TicketingBundle\Entity\Ticket $ticket
+     */
+    public function removeTicket(\DG\TicketingBundle\Entity\Ticket $ticket)
+    {
+        $this->tickets->removeElement($ticket);
+    }
+
+    /**
+     * Set durationticket
+     *
+     * @param \OC\PlatformBundle\Entity\DurationTicket $durationticket
+     *
+     * @return Booking
+     */
+    public function setDurationticket(\OC\PlatformBundle\Entity\DurationTicket $durationticket)
+    {
+        $this->durationticket = $durationticket;
+
+        return $this;
+    }
+
+    /**
+     * Get durationticket
+     *
+     * @return \OC\PlatformBundle\Entity\DurationTicket
+     */
+    public function getDurationticket()
+    {
+        return $this->durationticket;
+    }
 }

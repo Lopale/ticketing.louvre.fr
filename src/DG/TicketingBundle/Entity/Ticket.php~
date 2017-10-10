@@ -55,9 +55,9 @@ class Ticket
     private $firstnameTicket;
 
     /**
-     * @var string
+     * @var \DateTime
      *
-     * @ORM\Column(name="brithDate", type="string", length=255)
+     * @ORM\Column(name="brithDate", type="date")
      */
     private $brithDate;
 
