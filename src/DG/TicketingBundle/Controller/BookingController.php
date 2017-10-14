@@ -44,25 +44,16 @@ class BookingController extends Controller
 
       $em = $this->getDoctrine()->getManager();
       $em->persist($booking);
+
+
+
       $em->flush();
+
       $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
-      return $this->redirectToRoute('dg_ticketing_ticket', array('id' => $booking->getId()));
+      
+      return $this->redirectToRoute('dg_ticketing_view', array('id' => $booking->getId()));
     }
     return $this->render('DGTicketingBundle:Booking:add.html.twig', array(
-      'form' => $form->createView(),
-    ));
-  }
-
-
-  public function ticketAction($id, Request $request)
-  {
-    
-    // On crée un objet Booking
-    $ticket = new Ticket();
-
-    $form   = $this->get('form.factory')->create(TicketType::class, $ticket);
-
-    return $this->render('DGTicketingBundle:Booking:ticket.html.twig', array(
       'form' => $form->createView(),
     ));
 
@@ -72,8 +63,9 @@ class BookingController extends Controller
   
 
 
-  public function viewAction($id, Request $request)
+  public function viewAction($id)
   {
+
     $em = $this->getDoctrine()->getManager();
 
     // On récupère l'annonce $id

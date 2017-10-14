@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class BookingType extends AbstractType
 {
@@ -38,6 +39,13 @@ class BookingType extends AbstractType
         $disabledDate = $disabledDateCurrentYear.'25-12-'.$currentYear.', '.$disabledDateNextYear.'25-12-'.$nextYear;
         
         //$disabledDate ='25-12-2017,25-12-2018';
+
+        // SI il est plus de 14h, le jour en cour est désactivé
+        if(date("H")>=14){
+          $aujourdhui = date("d-m-Y");
+          $disabledDate = $disabledDate.$aujourdhui;
+        }
+
 
         return $disabledDate;
     }
@@ -67,24 +75,26 @@ class BookingType extends AbstractType
                                 
                             ))
       ->add('email',     EmailType::class, array('label' => 'Adresse email à laquelle seront envoyé les billets','required' => true))
+      ->add('durationBooking', ChoiceType::class, array(
+          'label' => 'Votre visite va durée :',
+          'required' => true,
+          'choices'  => array(
+              'Une Journée' => 1,
+              'Une Demi-Journée' => 2
+          ),
+      ))
 
-      ->add('durationticket', EntityType::class, array(
-          'label'        => 'vous désirez un ticket pour :',
-          'class'        => 'DGTicketingBundle:DurationTicket',
-          'choice_label' => 'nameDuration',
-          'multiple'     => false,
-          'expanded'     => true
-        ))
       /*
        * Rappel :
-       ** - 1er argument : nom du champ, ici « categories », car c'est le nom de l'attribut
+       ** - 1er argument : nom du champ, ici « tickets », car c'est le nom de l'attribut
        ** - 2e argument : type du champ, ici « CollectionType » qui est une liste de quelque chose
        ** - 3e argument : tableau d'options du champ
        */
       ->add('tickets', CollectionType::class, array(
         'entry_type'   => TicketType::class,
         'allow_add'    => true,
-        'allow_delete' => true
+        'allow_delete' => true,
+        'by_reference' => false
       ))
       ->add('Valider',      SubmitType::class);
     }

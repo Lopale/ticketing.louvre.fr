@@ -4,23 +4,24 @@ namespace DG\TicketingBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+// On rajoute ce use pour la contrainte :
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+// N'oubliez pas de rajouter ce « use », il définit le namespace pour les annotations de validation
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+
 
 /**
  * Booking
  *
  * @ORM\Table(name="booking")
  * @ORM\Entity(repositoryClass="DG\TicketingBundle\Repository\BookingRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Booking
 {
-
-    /**
-   * @ORM\ManyToOne(targetEntity="OC\PlatformBundle\Entity\DurationTicket")
-   * @ORM\JoinColumn(nullable=false)
-   */
-  private $durationticket;
-
-
 
 
     /**
@@ -36,6 +37,7 @@ class Booking
      * @var \DateTime
      *
      * @ORM\Column(name="bookingDate", type="datetime")
+     * @Assert\DateTime()
      */
     private $bookingDate;
 
@@ -43,6 +45,7 @@ class Booking
      * @var \DateTime
      *
      * @ORM\Column(name="visiteDay", type="datetime")
+     * @Assert\DateTime()
      */
     private $visiteDay;
 
@@ -50,6 +53,11 @@ class Booking
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=150)
+     * @Assert\Length(min=6)
+     * @Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email.",
+     *     checkMX = true
+     * )
      */
     private $email;
 
@@ -66,17 +74,26 @@ class Booking
     private $bookingTerminated = false;
 
 
-    /**
-   * @ORM\OneToMany(targetEntity="DG\TicketingBundle\Entity\Ticket", mappedBy="booking")
+        /**
+     * @var int
+     *
+     * @ORM\Column(name="durationBooking", type="smallint")
+     */
+    private $durationBooking;
+
+  /**
+   * @ORM\OneToMany(targetEntity="DG\TicketingBundle\Entity\Ticket", mappedBy="booking", cascade={"persist"})
    */
-    private $tickets; // Notez le « s » une commande (booking) à plusieurs ticket
+  private $tickets; // Notez le « s », une annonce est liée à plusieurs candidatures
+
 
 
     public function __construct()
       {
         // Par défaut, la date de la Réservation est la date d'aujourd'hui
         $this->bookingDate = new \Datetime();
-        $this->visiteDay = new \Datetime();
+        // La date de viste par defaut est le lendemain
+        $this->visiteDay = new \Datetime(date('d-m-Y', strtotime(date('d-m-Y').' + 1 DAY')));
         $this->tickets = new ArrayCollection();
       }
 
@@ -164,6 +181,30 @@ class Booking
     }
 
     /**
+     * Set durationBooking
+     *
+     * @param integer $durationBooking
+     *
+     * @return Booking
+     */
+    public function setDurationBooking($durationBooking)
+    {
+        $this->durationBooking = $durationBooking;
+
+        return $this;
+    }
+
+    /**
+     * Get durationBooking
+     *
+     * @return int
+     */
+    public function getDurationBooking()
+    {
+        return $this->durationBooking;
+    }
+
+    /**
      * Set terminated
      *
      * @param boolean $terminated
@@ -237,6 +278,24 @@ class Booking
 
 
 
+
+    
+  /**
+   * @param Ticket $ticket
+   */
+  public function addTicket(Ticket $ticket)
+  {
+    $this->tickets[] = $ticket;
+    // On lie l'annonce à la candidature
+    $ticket->setBooking($this);
+  }
+  /**
+   * @param Ticket $ticket
+   */
+  public function removeTicket(Ticket $ticket)
+  {
+    $this->tickets->removeElement($ticket);
+  }
   /**
    * @return \Doctrine\Common\Collections\Collection
    */
@@ -245,54 +304,5 @@ class Booking
     return $this->tickets;
   }
 
-
-
-
-    /**
-     * Add ticket
-     *
-     * @param \DG\TicketingBundle\Entity\Ticket $ticket
-     *
-     * @return Booking
-     */
-    public function addTicket(\DG\TicketingBundle\Entity\Ticket $ticket)
-    {
-        $this->tickets[] = $ticket;
-
-        return $this;
-    }
-
-    /**
-     * Remove ticket
-     *
-     * @param \DG\TicketingBundle\Entity\Ticket $ticket
-     */
-    public function removeTicket(\DG\TicketingBundle\Entity\Ticket $ticket)
-    {
-        $this->tickets->removeElement($ticket);
-    }
-
-    /**
-     * Set durationticket
-     *
-     * @param \OC\PlatformBundle\Entity\DurationTicket $durationticket
-     *
-     * @return Booking
-     */
-    public function setDurationticket(\OC\PlatformBundle\Entity\DurationTicket $durationticket)
-    {
-        $this->durationticket = $durationticket;
-
-        return $this;
-    }
-
-    /**
-     * Get durationticket
-     *
-     * @return \OC\PlatformBundle\Entity\DurationTicket
-     */
-    public function getDurationticket()
-    {
-        return $this->durationticket;
-    }
+  
 }

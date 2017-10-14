@@ -1,23 +1,16 @@
 <?php
 
 namespace DG\TicketingBundle\Entity;
-
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
- * Ticket
- *
  * @ORM\Table(name="ticket")
  * @ORM\Entity(repositoryClass="DG\TicketingBundle\Repository\TicketRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Ticket
 {
-    /**
-   * @ORM\ManyToOne(targetEntity="DG\TicketingBundle\Entity\Booking")
-   * @ORM\JoinColumn(nullable=false)
-   */
-     private $booking;
-    /**
+  /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
@@ -34,16 +27,10 @@ class Ticket
     private $reducedPrice;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="visitDay", type="date")
-     */
-    private $visitDay;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="nameTicket", type="string", length=255)
+     * @Assert\Length(min=2)
      */
     private $nameTicket;
 
@@ -51,13 +38,23 @@ class Ticket
      * @var string
      *
      * @ORM\Column(name="firstnameTicket", type="string", length=255)
+     * @Assert\Length(min=2)
      */
     private $firstnameTicket;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nationality", type="string", length=255)
+     * @Assert\Length(min=4)
+     */
+    private $nationality;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="brithDate", type="date")
+     * @Assert\DateTime()
      */
     private $brithDate;
 
@@ -67,6 +64,17 @@ class Ticket
      * @ORM\Column(name="ticketType", type="smallint")
      */
     private $ticketType;
+
+     public function __construct()
+      {
+        $this->ticketType = '0';
+      }
+
+  /**
+   * @ORM\ManyToOne(targetEntity="DG\TicketingBundle\Entity\Booking", inversedBy="tickets")
+   * @ORM\JoinColumn(nullable=false)
+   */
+  private $booking;
 
 
     /**
@@ -101,30 +109,6 @@ class Ticket
     public function getReducedPrice()
     {
         return $this->reducedPrice;
-    }
-
-    /**
-     * Set visitDay
-     *
-     * @param \DateTime $visitDay
-     *
-     * @return Ticket
-     */
-    public function setVisitDay($visitDay)
-    {
-        $this->visitDay = $visitDay;
-
-        return $this;
-    }
-
-    /**
-     * Get visitDay
-     *
-     * @return \DateTime
-     */
-    public function getVisitDay()
-    {
-        return $this->visitDay;
     }
 
     /**
@@ -176,6 +160,31 @@ class Ticket
     }
 
     /**
+     * Set nationality
+     *
+     * @param string $nationality
+     *
+     * @return Ticket
+     */
+    public function setNationality($nationality)
+    {
+        $this->nationality = $nationality;
+
+        return $this;
+    }
+
+    /**
+     * Get nationality
+     *
+     * @return string
+     */
+    public function getNationality()
+    {
+        return $this->nationality;
+    }
+
+
+    /**
      * Set brithDate
      *
      * @param string $brithDate
@@ -222,6 +231,21 @@ class Ticket
     {
         return $this->ticketType;
     }
+
+  /**
+   * @param Bokking $booking
+   */
+  public function setBokking(Bokking $booking)
+  {
+    $this->booking = $booking;
+  }
+  /**
+   * @return Bokking
+   */
+  public function getBokking()
+  {
+    return $this->booking;
+  }
 
     /**
      * Set booking
