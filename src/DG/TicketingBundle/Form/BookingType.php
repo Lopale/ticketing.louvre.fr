@@ -80,7 +80,7 @@ class BookingType extends AbstractType
           'required' => true,
           'choices'  => array(
               'Une Journée' => 1,
-              'Une Demi-Journée' => 2
+              'Une Demi-Journée' => 0.5
           ),
       ))
 

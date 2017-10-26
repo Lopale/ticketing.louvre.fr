@@ -81,6 +81,22 @@ class Booking
      */
     private $durationBooking;
 
+     /**
+     * @var int
+     *
+     * @ORM\Column(name="totalBooking", type="smallint")
+     */
+    private $totalBooking;
+
+     /**
+     * @var string
+     *
+     * @ORM\Column(name="customerName", type="string", length=255)
+     * @Assert\Length(min=4)
+     */
+    private $customerName ="Nom Du titulaire de la carte";
+
+
   /**
    * @ORM\OneToMany(targetEntity="DG\TicketingBundle\Entity\Ticket", mappedBy="booking", cascade={"persist"})
    */
@@ -92,8 +108,10 @@ class Booking
       {
         // Par défaut, la date de la Réservation est la date d'aujourd'hui
         $this->bookingDate = new \Datetime();
-        // La date de viste par defaut est le lendemain
-        $this->visiteDay = new \Datetime(date('d-m-Y', strtotime(date('d-m-Y').' + 1 DAY')));
+        // La date de viste par defaut est le lundi suivant, pour éviter que le jour par défault ne sois pas un jour non ouvrable
+        $this->visiteDay = new \Datetime(date('d-m-Y', strtotime(date('d-m-Y').' NEXT MONDAY')));
+        // Par défaut, le total de la commande est de 0 €
+        $this->totalBooking = '0';
         $this->tickets = new ArrayCollection();
       }
 
@@ -305,4 +323,52 @@ class Booking
   }
 
   
+
+    /**
+     * Set totalBooking
+     *
+     * @param integer $totalBooking
+     *
+     * @return Booking
+     */
+    public function setTotalBooking($totalBooking)
+    {
+        $this->totalBooking = $totalBooking;
+
+        return $this;
+    }
+
+    /**
+     * Get totalBooking
+     *
+     * @return integer
+     */
+    public function getTotalBooking()
+    {
+        return $this->totalBooking;
+    }
+
+    /**
+     * Set customerName
+     *
+     * @param string $customerName
+     *
+     * @return Booking
+     */
+    public function setCustomerName($customerName)
+    {
+        $this->customerName = $customerName;
+
+        return $this;
+    }
+
+    /**
+     * Get customerName
+     *
+     * @return string
+     */
+    public function getCustomerName()
+    {
+        return $this->customerName;
+    }
 }

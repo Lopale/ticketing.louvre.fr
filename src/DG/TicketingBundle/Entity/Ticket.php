@@ -59,15 +59,23 @@ class Ticket
     private $brithDate;
 
     /**
-     * @var int
+     * @var string
      *
-     * @ORM\Column(name="ticketType", type="smallint")
+     * @ORM\Column(name="ticketType", type="string", length=255)
+     * @Assert\Length(min=4)
      */
     private $ticketType;
 
+     /**
+     * @var int
+     *
+     * @ORM\Column(name="ticketPrice", type="smallint")
+     */
+    private $ticketPrice = "0";
+
      public function __construct()
       {
-        $this->ticketType = '0';
+        $this->ticketType = 'base';
       }
 
   /**
@@ -225,7 +233,7 @@ class Ticket
     /**
      * Get ticketType
      *
-     * @return int
+     * @return string
      */
     public function getTicketType()
     {
@@ -269,5 +277,53 @@ class Ticket
     public function getBooking()
     {
         return $this->booking;
+    }
+
+    /**
+     * Set bookingNumber
+     *
+     * @param integer $bookingNumber
+     *
+     * @return Ticket
+     */
+    public function setBookingNumber($bookingNumber)
+    {
+        $this->bookingNumber = $bookingNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get bookingNumber
+     *
+     * @return integer
+     */
+    public function getBookingNumber()
+    {
+        return $this->bookingNumber;
+    }
+
+    /**
+     * Set ticketPrice
+     *
+     * @param integer $ticketPrice
+     *
+     * @return Ticket
+     */
+    public function setTicketPrice($ticketPrice)
+    {
+        $this->ticketPrice = $ticketPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get ticketPrice
+     *
+     * @return integer
+     */
+    public function getTicketPrice()
+    {
+        return $this->ticketPrice;
     }
 }

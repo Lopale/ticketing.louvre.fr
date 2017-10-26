@@ -2,6 +2,7 @@
 
 namespace DG\TicketingBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Table(name="ticket")
  * @ORM\Entity(repositoryClass="DG\TicketingBundle\Repository\TicketRepository")
@@ -29,6 +30,7 @@ class Ticket
      * @var string
      *
      * @ORM\Column(name="nameTicket", type="string", length=255)
+     * @Assert\Length(min=2)
      */
     private $nameTicket;
 
@@ -36,6 +38,7 @@ class Ticket
      * @var string
      *
      * @ORM\Column(name="firstnameTicket", type="string", length=255)
+     * @Assert\Length(min=2)
      */
     private $firstnameTicket;
 
@@ -43,6 +46,7 @@ class Ticket
      * @var string
      *
      * @ORM\Column(name="nationality", type="string", length=255)
+     * @Assert\Length(min=4)
      */
     private $nationality;
 
@@ -50,23 +54,32 @@ class Ticket
      * @var \DateTime
      *
      * @ORM\Column(name="brithDate", type="date")
+     * @Assert\DateTime()
      */
     private $brithDate;
 
     /**
-     * @var int
+     * @var string
      *
-     * @ORM\Column(name="ticketType", type="smallint")
+     * @ORM\Column(name="ticketType", type="string", length=255)
+     * @Assert\Length(min=4)
      */
     private $ticketType;
 
+     /**
+     * @var int
+     *
+     * @ORM\Column(name="ticketPrice", type="smallint")
+     */
+    private $ticketPrice = "0";
+
      public function __construct()
       {
-        $this->ticketType = '0';
+        $this->ticketType = 'base';
       }
 
   /**
-   * @ORM\ManyToOne(targetEntity="DG\TicketingBundle\Entity\Booking", inversedBy="tickets", cascade={"persist"})
+   * @ORM\ManyToOne(targetEntity="DG\TicketingBundle\Entity\Booking", inversedBy="tickets")
    * @ORM\JoinColumn(nullable=false)
    */
   private $booking;
@@ -220,7 +233,7 @@ class Ticket
     /**
      * Get ticketType
      *
-     * @return int
+     * @return string
      */
     public function getTicketType()
     {
@@ -264,5 +277,29 @@ class Ticket
     public function getBooking()
     {
         return $this->booking;
+    }
+
+    /**
+     * Set bookingNumber
+     *
+     * @param integer $bookingNumber
+     *
+     * @return Ticket
+     */
+    public function setBookingNumber($bookingNumber)
+    {
+        $this->bookingNumber = $bookingNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get bookingNumber
+     *
+     * @return integer
+     */
+    public function getBookingNumber()
+    {
+        return $this->bookingNumber;
     }
 }

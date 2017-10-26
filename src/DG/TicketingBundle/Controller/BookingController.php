@@ -11,8 +11,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-
+use DG\TicketingBundle\Calculation\Calculationprice;
 
 class BookingController extends Controller
 {
@@ -45,9 +48,60 @@ class BookingController extends Controller
       $em = $this->getDoctrine()->getManager();
       $em->persist($booking);
 
-
-
       $em->flush();
+
+      /* Début Test Service */
+      //var_dump($booking);
+
+     
+
+      // On récupère le service
+      $calculationprice = $this->container->get('dg_ticketing.calculationprice');
+
+      // echo "Vous venez le : ".date_format($booking->getVisiteDay(),"Y/m/d H:i:s")."<br/>";
+      // echo "Vous avez fait votre réservation le : ".date_format($booking->getBookingDate(),"Y/m/d H:i:s")."<br/>";
+      // echo "Email à laquelle envoyer les  tickets : ".$booking->getEmail()."<br/>";
+      // Test calcul age en dur
+      //$calculationprice->age(date_format($booking->getVisiteDay(),"Y/m/d H:i:s"), '22-12-1987');
+      //echo "<br/>";
+     // $calculationprice->durationBooking($booking->getDurationBooking());
+
+
+      // On récupère l'annonce $booking->getId()
+    $booking = $em->getRepository('DGTicketingBundle:Booking')->find($booking->getId());
+
+    // On récupère la liste des billets de cette commande
+    $listTickets = $em
+      ->getRepository('DGTicketingBundle:Ticket')
+      ->findBy(array('booking' => $booking))
+    ;
+
+
+    //var_dump($listTickets);
+    //Test calcul age
+
+    for($i = 0; $i < count($listTickets); ++$i) {
+        $DetailTicket = $calculationprice->tarifBillet(date_format($booking->getVisiteDay(),"Y/m/d H:i:s"), date_format($listTickets[$i]->getBrithDate(),"Y/m/d H:i:s"),$listTickets[$i]->getReducedPrice(), $booking->getDurationBooking());
+
+
+        // Récupérer la variable $ticketPrice
+        //$ticketPrice = $calculationprice->tarifBillet();
+
+        $listTickets[$i]->setTicketPrice($DetailTicket[0]);
+        $listTickets[$i]->setTicketType($DetailTicket[1]);
+        
+        $em->flush();
+
+
+    }
+
+    $totalCommande = $calculationprice->totalPrice($listTickets);
+    $booking->setTotalBooking($totalCommande);
+
+    $em->flush();
+
+      //die();
+      /* Fin Test Service */
 
       $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
       
@@ -58,9 +112,6 @@ class BookingController extends Controller
     ));
 
   }
-
-
-  
 
 
   public function viewAction($id)
@@ -89,6 +140,52 @@ class BookingController extends Controller
       'listTickets' => $listTickets
     ));
   }
+
+
+
+
+
+  public function paiementAction($id)
+  {
+
+
+    $em = $this->getDoctrine()->getManager();
+
+    // On récupère l'annonce $id
+    $booking = $em->getRepository('DGTicketingBundle:Booking')->find($id);
+
+    if (null === $booking) {
+      throw new NotFoundHttpException("La commande d'id ".$id." n'existe pas.");
+    }
+
+    // On crée le FormBuilder grâce au service form factory
+    $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $booking);
+
+    // On ajoute les champs de l'entité que l'on veut à notre formulaire
+    $formBuilder
+      ->add('id',                 TextType::class)
+      ->add('totalBooking',       TextType::class)
+      ->add('customerName',       TextType::class)
+      //->add("inputName", TextType::class , array("mapped"=>false, "data"=>2, "label"=>'Nom Du titulaire de la carte'))
+      ->add("code", TextType::class , array("mapped"=>false, "label"=>'Code de carte bleu'))
+      ->add("validityMonth", TextType::class , array("mapped"=>false, "label"=>'Mois de validité'))
+      ->add("validityYear", TextType::class , array("mapped"=>false, "label"=>'Année de validité'))
+      ->add("crypto", TextType::class , array("mapped"=>false, "label"=>'Cryptogramme'))
+      ->add('Valider',            SubmitType::class);
+    ;
+    // Pour l'instant, pas de candidatures, catégories, etc., on les gérera plus tard
+
+    // À partir du formBuilder, on génère le formulaire
+    $form = $formBuilder->getForm();
+
+    return $this->render('DGTicketingBundle:Booking:paiement.html.twig', array(
+      'booking' => $booking,
+      'form' => $form->createView(),
+    ));
+
+
+  }
+
 
 
 }

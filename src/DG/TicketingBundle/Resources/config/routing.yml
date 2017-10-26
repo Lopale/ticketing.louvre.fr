@@ -13,8 +13,8 @@ dg_ticketing_add:
 
 #2eme etape
 dg_ticketing_ticket:
-    path:      /ticket/{id}
-    defaults: { _controller: DGTicketingBundle:Booking:ticket }
+    path:      /paiement/{id}
+    defaults: { _controller: DGTicketingBundle:Booking:paiement }
     requirements:
         id: \d+
 

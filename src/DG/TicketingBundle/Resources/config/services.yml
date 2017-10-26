@@ -2,3 +2,25 @@ services:
 #    dg_ticketing.example:
 #        class: DG\TicketingBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
+services:
+    dg_ticketing.calculationprice:
+        class: DG\TicketingBundle\Calculation\CalculationPrice
+        arguments:
+            $tarif_reduit:          '%tarif_reduit%'
+            $min_age_bebe:          '%min_age_bebe%'
+            $max_age_bebe:          '%max_age_bebe%'
+            $tarif_age_bebe:        '%tarif_age_bebe%'
+            $name_ticket_bebe:      '%name_ticket_bebe%'
+            $min_age_enfant:        '%min_age_enfant%'
+            $max_age_enfant:        '%max_age_enfant%'
+            $tarif_age_enfant:      '%tarif_age_enfant%'
+            $name_ticket_enfant:    '%name_ticket_enfant%'
+            $min_age_normal:        '%min_age_normal%'
+            $max_age_normal:        '%max_age_normal%'
+            $tarif_age_normal:      '%tarif_age_normal%'
+            $name_ticket_normal:    '%name_ticket_normal%'
+            $min_age_senior:        '%min_age_senior%'
+            $tarif_age_senior:      '%tarif_age_senior%'
+            $name_ticket_senior:    '%name_ticket_senior%'
+            $name_ticket_reduit:    '%name_ticket_reduit%'
+            $max_tickets:           '%max_tickets%'
