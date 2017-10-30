@@ -31,10 +31,25 @@
     #}
 
 
-    <p>Numéro de commande (ID) : {{ booking.id }}</p>
+
+
     <div class="well">
-      {{ form(form) }}
-    </div>
+      <p>Numéro de commande (ID) : {{ booking.id }}</p>
+      <p>Total : {{ booking.totalBooking }} €</p>
+      <form action="../terminated/{{ booking.id }}" method="POST">
+        <script
+                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                data-key="pk_test_rxvb80iUNvW5sDrgAFRJ8SUl"
+                data-amount="{{ booking.totalBooking }}00"
+                data-name="oc-stripe"
+                data-description="Widget"
+                data-locale="auto"
+                data-currency="eur">
+        </script>
+    </form>
+  </div>
+
+
 
 
 

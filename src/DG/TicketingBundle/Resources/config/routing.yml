@@ -18,6 +18,13 @@ dg_ticketing_ticket:
     requirements:
         id: \d+
 
+#3eme etape
+dg_ticketing_terminated:
+    path:      /terminated/{id}
+    defaults: { _controller: DGTicketingBundle:Booking:terminated }
+    requirements:
+        id: \d+
+
 #Voir une Réservation particulière
 dg_ticketing_view:
     path:      /booking/{id}

@@ -10,7 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -59,13 +58,8 @@ class BookingController extends Controller
       // On récupère le service
       $calculationprice = $this->container->get('dg_ticketing.calculationprice');
 
-      // echo "Vous venez le : ".date_format($booking->getVisiteDay(),"Y/m/d H:i:s")."<br/>";
-      // echo "Vous avez fait votre réservation le : ".date_format($booking->getBookingDate(),"Y/m/d H:i:s")."<br/>";
-      // echo "Email à laquelle envoyer les  tickets : ".$booking->getEmail()."<br/>";
-      // Test calcul age en dur
-      //$calculationprice->age(date_format($booking->getVisiteDay(),"Y/m/d H:i:s"), '22-12-1987');
-      //echo "<br/>";
-     // $calculationprice->durationBooking($booking->getDurationBooking());
+
+
 
 
       // On récupère l'annonce $booking->getId()
@@ -77,7 +71,8 @@ class BookingController extends Controller
       ->findBy(array('booking' => $booking))
     ;
 
-
+      // $calculationprice->durationBooking($booking->getDurationBooking());
+      // $booking->setDurationBooking($booking->getDurationBooking());
     //var_dump($listTickets);
     //Test calcul age
 
@@ -144,7 +139,9 @@ class BookingController extends Controller
 
 
 
-  public function paiementAction($id)
+
+
+  public function paiementAction($id, Request $request)
   {
 
 
@@ -157,46 +154,52 @@ class BookingController extends Controller
       throw new NotFoundHttpException("La commande d'id ".$id." n'existe pas.");
     }
 
+    // On crée le FormBuilder grâce au service form factory
+    $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $booking);
+
+    // On ajoute les champs de l'entité que l'on veut à notre formulaire
+    $formBuilder
+      ->add('id',                 TextType::class)
+      ->add('totalBooking',       TextType::class)
+      ->add('customerName',       TextType::class)
+      //->add("inputName", TextType::class , array("mapped"=>false, "data"=>2, "label"=>'Nom Du titulaire de la carte'))
+      ->add("code", TextType::class , array(
+          "mapped"=>false,
+          'attr' => array('data-stripe' => 'number'),
+           "label"=>'Code de carte bleu'))
+      ->add("validityMonth", TextType::class , array(
+          "mapped"=>false,
+          'attr' => array('data-stripe' => 'exp_month'),
+           "label"=>'Mois de validité'))
+      ->add("validityYear", TextType::class , array(
+          "mapped"=>false,
+          'attr' => array('data-stripe' => 'exp_year'),
+           "label"=>'Année de validité'))
+      ->add("crypto", TextType::class , array(
+          "mapped"=>false,
+          'attr' => array('data-stripe' => 'cvc'),
+           "label"=>'Cryptogramme'))
+      ->add('Valider',            SubmitType::class);
+    ;
+    // Pour l'instant, pas de candidatures, catégories, etc., on les gérera plus tard
+
+    // À partir du formBuilder, on génère le formulaire
+    $form = $formBuilder->getForm();
+
+
+    if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+      // SI on a soumis le formulaire
+      
+    }
+
 
     return $this->render('DGTicketingBundle:Booking:paiement.html.twig', array(
-      'booking' => $booking
+      'booking' => $booking,
+      'form' => $form->createView(),
     ));
 
 
   }
-
-
-  /**
-     * @Route(
-     *     "/checkout",
-     *     name="order_checkout",
-     *     methods="POST"
-     * )
-     */
-    public function terminatedAction(Request $request)
-    {
-        \Stripe\Stripe::setApiKey("sk_test_p9SLzumPEoQLhxeZVsPWUCL7");
-
-        // Get the credit card details submitted by the form
-        $token = $_POST['stripeToken'];
-
-        // Create a charge: this will charge the user's card
-        try {
-            $charge = \Stripe\Charge::create(array(
-                "amount" => 1000, // Amount in cents
-                "currency" => "eur",
-                "source" => $token,
-                "description" => "Paiement Stripe - OpenClassrooms Exemple"
-            ));
-            $this->addFlash("success","Bravo ça marche !");
-            //return $this->redirectToRoute("order_prepare");
-        } catch(\Stripe\Error\Card $e) {
-
-            $this->addFlash("error","Snif ça marche pas :(");
-            //return $this->redirectToRoute("order_prepare");
-            // The card has been declined
-        }
-    }
 
 
 
