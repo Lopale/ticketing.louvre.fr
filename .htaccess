@@ -1,0 +1,64 @@
+# fichier .htaccess qui se trouvera à la racine de mon site web hébergé chez OVH
+ 
+ 
+######## URL rewriting #########
+ 
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ web/$1 [QSA,L]
+</IfModule>
+ 
+
+ 
+####### Compressions ########
+ 
+# MOD_DEFLATE COMPRESSION
+SetOutputFilter DEFLATE
+AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/x-javascript application/x-httpd-php
+#Pour les navigateurs incompatibles
+BrowserMatch ^Mozilla/4 gzip-only-text/html
+BrowserMatch ^Mozilla/4\.0[678] no-gzip
+BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+BrowserMatch \bMSI[E] !no-gzip !gzip-only-text/html
+#ne pas compresser si ces fichiers le sont déjà
+SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+SetEnvIfNoCase Request_URI \.(?:exe|t?gz|zip|bz2|sit|rar)$ no-gzip dont-vary
+SetEnvIfNoCase Request_URI \.(?:pdf|avi|mov|mp3|mp4|rm)$ no-gzip dont-vary
+#les proxies doivent donner le bon contenu
+Header append Vary User-Agent env=!dont-vary
+ 
+########## Cache #########
+ 
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 2592000 seconds"
+    ExpiresByType image/jpeg "access plus 2592000 seconds"
+    ExpiresByType image/png "access plus 2592000 seconds"
+    ExpiresByType image/gif "access plus 2592000 seconds"
+    AddType image/x-icon .ico
+    ExpiresByType image/ico "access plus 2592000 seconds"
+    ExpiresByType image/icon "access plus 2592000 seconds"
+    ExpiresByType image/x-icon "access plus 2592000 seconds"
+    ExpiresByType text/css "access plus 2592000 seconds"
+    ExpiresByType text/javascript "access plus 2592000 seconds"
+    ExpiresByType application/javascript "access plus 2592000 seconds"
+    ExpiresByType application/x-javascript "access plus 2592000 seconds"
+    ExpiresByType application/x-shockwave-flash "access plus 2592000 seconds"
+</IfModule>
+ 
+ 
+# Enlever les Etags
+Header unset ETag
+FileETag none
+ 
+########## Securité #######
+ 
+# Protection des fichier .htaccess
+<files .htaccess>
+order allow,deny
+deny from all
+</files>
+ 
+# Protection de la lecture des répertoires
+Options -Indexes
