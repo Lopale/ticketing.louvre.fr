@@ -1,7 +1,7 @@
 {% extends "DGTicketingBundle::layout.html.twig" %}
 
 {% block title %}
-  Lecture d'une annonce - {{ parent() }}
+  Votre Commande - {{ parent() }}
 {% endblock %}
 
 {% block dgticketing_body %}
@@ -17,22 +17,6 @@
     </div>
 
 
-    {#
-
-    Besoin de :
-    	- ID commande
-    	- Total commande
-    	- Nom
-    	- Code de carte bleu
-    	- Mois de validité
-    	- Année de validité
-    	- Cryptogramme
-
-    #}
-
-
-
-
     <div class="well">
       <p>Numéro de commande (ID) : {{ booking.id }}</p>
       <p>Total : {{ booking.totalBooking }} €</p>
@@ -41,7 +25,7 @@
                 src="https://checkout.stripe.com/checkout.js" class="stripe-button"
                 data-key="pk_test_rxvb80iUNvW5sDrgAFRJ8SUl"
                 data-amount="{{ booking.totalBooking }}00"
-                data-name="oc-stripe"
+                data-name="Louvre"
                 data-description="Widget"
                 data-locale="auto"
                 data-currency="eur">

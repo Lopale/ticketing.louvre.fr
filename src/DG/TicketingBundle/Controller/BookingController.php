@@ -175,26 +175,94 @@ class BookingController extends Controller
      */
     public function terminatedAction(Request $request)
     {
+
+
+        $em = $this->getDoctrine()->getManager();
+
         \Stripe\Stripe::setApiKey("sk_test_p9SLzumPEoQLhxeZVsPWUCL7");
 
         // Get the credit card details submitted by the form
-        $token = $_POST['stripeToken'];
+        $token   = $_POST['stripeToken'];
+        $id = $request->attributes->get('id');
+
+        // On récupère l'annonce $id
+        $booking = $em->getRepository('DGTicketingBundle:Booking')->find($id);
+
+
+        $total = $booking->getTotalBooking();
+        $total = $total * 100;
+
+        if (null === $booking) {
+          throw new NotFoundHttpException("La commande d'id ".$id." n'existe pas.");
+        }
 
         // Create a charge: this will charge the user's card
         try {
             $charge = \Stripe\Charge::create(array(
-                "amount" => 1000, // Amount in cents
+                "amount" => $total, // Amount in cents
                 "currency" => "eur",
                 "source" => $token,
                 "description" => "Paiement Stripe - OpenClassrooms Exemple"
             ));
             $this->addFlash("success","Bravo ça marche !");
-            //return $this->redirectToRoute("order_prepare");
+
+            // Envois email
+
+            $dateVisite = $booking->getVisiteDay();
+            $dateCommande = $booking->getBookingDate();
+
+            $listTickets = $em
+              ->getRepository('DGTicketingBundle:Ticket')
+              ->findBy(array('booking' => $booking))
+            ;
+
+            
+
+             $message = (new \Swift_Message('Vos billets du Louvre'))
+              ->setFrom('louvre@example.com')
+              ->setTo($booking->getEmail())
+              ->setBody(
+                  $this->renderView(
+                      // app/Resources/views/Emails/registration.html.twig
+                      'Email/email.html.twig',
+                      array('dateVisite' => $dateVisite,
+                        'dateCommande' => $dateCommande,
+                        'numeroCommande'=>$booking->getId(),
+                        'listTickets' => $listTickets
+                      )
+                  ),
+                  'text/html'
+              )
+              /*
+               * If you also want to include a plaintext version of the message
+              ->addPart(
+                  $this->renderView(
+                      'Emails/registration.txt.twig',
+                      array('name' => $name)
+                  ),
+                  'text/plain'
+              )
+              */
+          ;
+
+          //$mailer->send($message);
+
+          // or, you can also fetch the mailer service this way
+           $this->get('mailer')->send($message);
+
+
+            return $this->render('DGTicketingBundle:Booking:mailling.html.twig', array(
+              'booking' => $booking
+            ));
+            
         } catch(\Stripe\Error\Card $e) {
 
             $this->addFlash("error","Snif ça marche pas :(");
             //return $this->redirectToRoute("order_prepare");
             // The card has been declined
+            return $this->render('DGTicketingBundle:Booking:paiement.html.twig', array(
+              'booking' => $booking
+            ));
         }
     }
 

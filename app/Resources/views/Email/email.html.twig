@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        tr, td, th {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Madame, Monsieur</h1>
+    <p>
+        Vous avez récemment effectuer une commande sur la billeterie du Louvre le {{ dateCommande }}, comme convenu, vous trouverez ci-joint vos billets faisant foi pour billet d'entrée.
+    </p>
+
+    <p>Date de la visite : {{ dateVisite }}</p>
+    <p>Numéro de commande : {{ numeroCommande }}</p>
+
+     {% if listTickets|length > 0 %}
+        <div>
+          Cette commande contient les tickets suivants :
+            {% for ticket in listTickets %}
+              <div class="well">          
+                <ul>
+                  <li> Nom : {{ ticket.nameTicket }}</li>
+                  <li> Prénom : {{ ticket.firstnameTicket }}</li>
+                  <li> Date de naissance : {{ ticket.brithDate|date('d/m/Y') }}</li>
+                  <li> Type de ticket : {{ ticket.ticketType }}</li>
+                  <li> Tarif : {{ ticket.ticketPrice }} €</li>
+                  {% if ticket.reducedPrice == 1 %}
+                     <p> Tarif réduit</p>
+                     <p>Une pièce justificative vous sera demandée.</p>
+                  {% endif %}              
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+      {% endif %}
+
+    <p class="help-text">
+        Le musée du Louvre vous remercie de votre confiance et vous souhaite une excellente visite.
+    </p>
+    </body>
+</html>

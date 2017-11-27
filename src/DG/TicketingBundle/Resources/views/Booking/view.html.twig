@@ -1,7 +1,7 @@
 {% extends "DGTicketingBundle::layout.html.twig" %}
 
 {% block title %}
-  Lecture d'une annonce - {{ parent() }}
+  Votre Commande - {{ parent() }}
 {% endblock %}
 
 {% block dgticketing_body %}
@@ -20,28 +20,31 @@
  <p>Date de la commande : {{ booking.bookingDate|date('d/m/Y') }}</p>
  <p>Date de la visite : {{ booking.visiteDay|date('d/m/Y') }}</p>
  <p>Email de commande : {{ booking.email }}</p>
- <p>Numéro de réservation : {{ booking.bookingNumber }}</p>
-
+ <p>Total de la commande : {{ booking.totalBooking }} €</p>
+ <a href="../paiement/{{ booking.id }}" class="btn btn-default btn-primary">Payer</a>
 
   {% if listTickets|length > 0 %}
     <div>
       Cette commande contient les tickets suivants :
-      <ul>
         {% for ticket in listTickets %}
-        <li>
-        	<ul>
-	          <li> Nom : {{ ticket.nameTicket }}</li>
-	          <li> Prénom : {{ ticket.firstnameTicket }}</li>
-	          <li> Date de naissance : {{ ticket.brithDate|date('d/m/Y') }}</li>
-            <li> Type de ticket : {{ ticket.ticketType }}</li>
-            <li> Tarif réduit : {{ ticket.reducedPrice }}</li>
-	        </ul>
-	    </li>
+          <div class="well">          
+          	<ul>
+  	          <li> Nom : {{ ticket.nameTicket }}</li>
+  	          <li> Prénom : {{ ticket.firstnameTicket }}</li>
+  	          <li> Date de naissance : {{ ticket.brithDate|date('d/m/Y') }}</li>
+              <li> Type de ticket : {{ ticket.ticketType }}</li>
+              <li> Tarif : {{ ticket.ticketPrice }} €</li>
+              {% if ticket.reducedPrice == 1 %}
+                 <p> Tarif réduit</p>
+                 <p>Une pièce justificative vous sera demandée.</p>
+              {% endif %}              
+  	        </ul>
+  	    </div>
         {% endfor %}
-      </ul>
     </div>
   {% endif %}
 
+  <a href="../paiement/{{ booking.id }}" class="btn btn-default btn-primary">Payer</a>
 
 
 

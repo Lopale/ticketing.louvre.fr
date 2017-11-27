@@ -25,6 +25,13 @@ dg_ticketing_terminated:
     requirements:
         id: \d+
 
+#4eme etape
+dg_ticketing_mailing:
+    path:      /mailling/{id}
+    defaults: { _controller: DGTicketingBundle:Booking:mailling }
+    requirements:
+        id: \d+
+
 #Voir une Réservation particulière
 dg_ticketing_view:
     path:      /booking/{id}

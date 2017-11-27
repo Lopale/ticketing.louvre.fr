@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        tr, td, th {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Madame, Monsieur {{ command.nom }}</h1>
+    <p>
+        Vous avez récemment effectuer une commande sur la billeterie du Louvre, comme convenu, vous trouverez ci-joint
+        vos billets faisant foi pour billet d'entrée.
+    </p>
+    <p>Numéro de commande {{ command.numeroCommande }}</p>
+    {% for ticket in command.tickets %}
+        <ul>
+            <li>{{ ticket.nom }}</li>
+            <li>{{ ticket.prenom }}</li>
+            <li>{{ ticket.tarif }}</li>
+            {% if ticket.promotion %}
+                <li>
+                    Le tarif réduit exige que vous présentiez un carte d’étudiant,
+                    militaire ou équivalent lors de l’entrée.
+                </li>
+            {% else %}
+                <li>Tarif réduit non demandé.</li>
+            {% endif %}
+            {% if command.reduction %}
+                <li>
+                    {{ command.reduction }}
+                </li>
+            {% else %}
+                <li>Réduction non demandée.</li>
+            {% endif %}
+        </ul>
+    {% endfor %}
+    <p>
+        P.S : Dans le cas où vous veniez à perdre vos billets, une copie est disponible par formulaire à cette adresse :
+        <a href="louvre.guillaumeloulier.fr">Billet perdu ?</a>
+    </p>
+    <p class="help-text">
+        Le musée du Louvre vous remercie de votre confiance et vous souhaite une excellente visite.
+    </p>
+    </body>
+</html>
