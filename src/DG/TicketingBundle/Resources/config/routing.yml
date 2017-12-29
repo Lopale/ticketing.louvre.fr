@@ -1,14 +1,6 @@
-#Première étape réservation
-dg_ticketing_home:    
-    path:      /{page}
-    defaults:
-        _controller:  DGTicketingBundle:Booking:index
-        page:        1
-    requirements:
-        page: \d*
-    
+
 dg_ticketing_add:
-    path:      /add
+    path:      /
     defaults: { _controller: DGTicketingBundle:Booking:add }
 
 #2eme etape

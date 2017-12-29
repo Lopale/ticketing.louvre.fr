@@ -15,10 +15,11 @@
 <body>
     <h1>Madame, Monsieur</h1>
     <p>
-        Vous avez récemment effectuer une commande sur la billeterie du Louvre le {{ dateCommande }}, comme convenu, vous trouverez ci-joint vos billets faisant foi pour billet d'entrée.
+        Vous avez récemment effectuer une commande sur la billeterie du Louvre le {{ dateCommande|date("d/m/Y") }}.
+        Veuillez imprimer ce mail, faisant foi pour billet d'entrée.
     </p>
 
-    <p>Date de la visite : {{ dateVisite }}</p>
+    <p>Date de la visite : {{ dateVisite|date("d/m/Y") }}</p>
     <p>Numéro de commande : {{ numeroCommande }}</p>
 
      {% if listTickets|length > 0 %}
