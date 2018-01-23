@@ -17,6 +17,12 @@
 		</div>
 	</div>
 
+
+	{% if message|length > 0 %}
+		<h1>Il n'y a pas assez de place disponible désolé</h1>
+	{% endif %}
+
+
 	{# Version non éclaté 
 	<div class="well">
 		{{ form(form) }}

@@ -1,6 +1,14 @@
-
+#Première étape réservation
+dg_ticketing_home:    
+    path:      /{page}
+    defaults:
+        _controller:  DGTicketingBundle:Booking:index
+        page:        1
+    requirements:
+        page: \d*
+    
 dg_ticketing_add:
-    path:      /
+    path:      /add
     defaults: { _controller: DGTicketingBundle:Booking:add }
 
 #2eme etape
@@ -23,6 +31,11 @@ dg_ticketing_mailing:
     defaults: { _controller: DGTicketingBundle:Booking:mailling }
     requirements:
         id: \d+
+
+# Error  
+dg_ticketing_add:
+    path:      /error
+    defaults: { _controller: DGTicketingBundle:Booking:error }
 
 #Voir une Réservation particulière
 dg_ticketing_view:

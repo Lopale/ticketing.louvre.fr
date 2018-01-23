@@ -84,7 +84,7 @@ class BookingController extends Controller
     for($i = 0; $i < count($listTickets); ++$i) {
         $DetailTicket = $calculationprice->tarifBillet(date_format($booking->getVisiteDay(),"Y/m/d H:i:s"), date_format($listTickets[$i]->getBrithDate(),"Y/m/d H:i:s"),$listTickets[$i]->getReducedPrice(), $booking->getDurationBooking());
 
-
+        //var_dump($listTickets[$i]);
         // Récupérer la variable $ticketPrice
         //$ticketPrice = $calculationprice->tarifBillet();
 
@@ -101,13 +101,23 @@ class BookingController extends Controller
 
     $em->flush();
 
-      //die();
+   
+
+      // var_dump($calculationprice->nbTicketsAlreadySell(date_format($booking->getVisiteDay(),"Y-m-d 00:00:00"))).
+      // die();
       /* Fin Test Service */
 
       $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
-      
-      return $this->redirectToRoute('dg_ticketing_view', array('id' => $booking->getId()));
+
+      if($calculationprice->nbTicketsAlreadySell(date_format($booking->getVisiteDay(),"Y-m-d 00:00:00")) === true){
+        return $this->redirectToRoute('dg_ticketing_view', array('id' => $booking->getId()));
+      }else{
+        return $this->render('DGTicketingBundle:Booking:error.html.twig', array(
+          'message' => "Il ne reste pas assez de place disponible ce jour<br/>Désolé",
+        ));
+      }
     }
+
     return $this->render('DGTicketingBundle:Booking:add.html.twig', array(
       'form' => $form->createView(),
     ));
@@ -265,6 +275,19 @@ class BookingController extends Controller
             ));
         }
     }
+
+
+
+  public function errorAction()
+  {
+
+    return $this->render('DGTicketingBundle:Booking:error.html.twig', array(
+      'message' => "Il ne reste pas assez de place disponible ce jour<br/>Désolé",
+    ));
+
+
+  }
+
 
 
 

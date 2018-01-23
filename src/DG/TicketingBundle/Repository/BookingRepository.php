@@ -2,6 +2,9 @@
 
 namespace DG\TicketingBundle\Repository;
 
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
+
 /**
  * BookingRepository
  *
@@ -10,4 +13,6 @@ namespace DG\TicketingBundle\Repository;
  */
 class BookingRepository extends \Doctrine\ORM\EntityRepository
 {
+
 }
+

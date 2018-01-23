@@ -2,6 +2,13 @@
 
 namespace DG\TicketingBundle\Calculation;
 
+
+use Doctrine\ORM\EntityManager;
+
+// Entity
+use DG\TicketingBundle\Entity\Ticket;
+
+
 class CalculationPrice
 {
 
@@ -9,7 +16,7 @@ class CalculationPrice
 	/*
 	Liste des fonction a créer
 
-	- compter le nombre de billet vendu le jour choisi et vérifier que le total est inférieur à 1000 entrée
+	X - compter le nombre de billet vendu le jour choisi et vérifier que le total est inférieur à 1000 entrée
 	X - Vérifier si un billet est en tarif réduit
 	X - Vérifier si les billets sont en demi journée
 	X - Si demi journée divise le prix en 2
@@ -21,7 +28,10 @@ class CalculationPrice
 	X - Mettre nombre de billet, Type de billet et tarifs dans paramètre.yml (actuellement dans app/config/services.yml)
 
 	*/
-
+	/**
+	* @var EntityManagerInterface
+	*/
+    private $em;
 	
 	private $tarif_reduit;
 	private $min_age_bebe;
@@ -48,8 +58,11 @@ class CalculationPrice
     private $commandPrice;
 
 
-    public function __construct($tarif_reduit, $min_age_bebe, $max_age_bebe, $tarif_age_bebe, $min_age_enfant, $max_age_enfant, $tarif_age_enfant, $min_age_normal, $max_age_normal, $tarif_age_normal, $min_age_senior, $tarif_age_senior, $max_tickets, $name_ticket_bebe, $name_ticket_enfant, $name_ticket_normal, $name_ticket_senior, $name_ticket_reduit)
+    public function __construct(EntityManager $em, $tarif_reduit, $min_age_bebe, $max_age_bebe, $tarif_age_bebe, $min_age_enfant, $max_age_enfant, $tarif_age_enfant, $min_age_normal, $max_age_normal, $tarif_age_normal, $min_age_senior, $tarif_age_senior, $max_tickets, $name_ticket_bebe, $name_ticket_enfant, $name_ticket_normal, $name_ticket_senior, $name_ticket_reduit)
     {
+
+    	$this->em 					= $em;
+
 		$this->tarif_reduit 		= $tarif_reduit;
 		$this->min_age_bebe 		= $min_age_bebe;
 		$this->max_age_bebe 		= $max_age_bebe;
@@ -73,6 +86,22 @@ class CalculationPrice
 
 
 	public function nbTicketsAlreadySell($visiteDay){
+
+		$result =  count(
+            $this->em->getRepository('DGTicketingBundle:Ticket')
+                           ->nbTicketsAlreadySellBis($visiteDay)
+        );
+
+
+
+		//return $result;
+
+        if($result >= $this->max_tickets){
+        	return false;
+        }else{
+	        return true;        	
+        }
+
 		
 	}
 
@@ -166,7 +195,7 @@ class CalculationPrice
             // Link the tickets to an Order, this way, every ticket has a parent.
             //$ticket->setbooking($booking);
         }
-        echo 'ici '.$TotalBooking;
+        //echo 'ici '.$TotalBooking;
         //return $TotalBooking;
     }
 

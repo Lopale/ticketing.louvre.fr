@@ -6,6 +6,7 @@ services:
     dg_ticketing.calculationprice:
         class: DG\TicketingBundle\Calculation\CalculationPrice
         arguments:
+            $em:                    "@doctrine.orm.entity_manager"
             $tarif_reduit:          '%tarif_reduit%'
             $min_age_bebe:          '%min_age_bebe%'
             $max_age_bebe:          '%max_age_bebe%'
@@ -24,3 +25,4 @@ services:
             $name_ticket_senior:    '%name_ticket_senior%'
             $name_ticket_reduit:    '%name_ticket_reduit%'
             $max_tickets:           '%max_tickets%'
+
